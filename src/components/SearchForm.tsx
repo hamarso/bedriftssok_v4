@@ -30,7 +30,8 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     naceCodes: [],
     postnummer: '',
     kommunenummer: '',
-    enhetType: 'hovedenhet'
+    enhetType: 'hovedenhet',
+    minAnsatte: undefined
   })
 
   const [naceInput, setNaceInput] = useState('')
@@ -163,6 +164,21 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
               <SelectItem value="underenhet">Underenhet</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Minimum antall ansatte */}
+        <div className="space-y-3">
+          <Label htmlFor="minAnsatte">Minimum antall ansatte</Label>
+          <Input
+            id="minAnsatte"
+            type="number"
+            placeholder="F.eks. 100"
+            value={filters.minAnsatte || ''}
+            onChange={(e) => {
+              const value = e.target.value === '' ? undefined : parseInt(e.target.value)
+              setFilters(prev => ({ ...prev, minAnsatte: value }))
+            }}
+          />
         </div>
       </div>
 

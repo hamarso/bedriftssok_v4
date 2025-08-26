@@ -3,6 +3,7 @@ export interface SearchFilters {
   postnummer: string;
   kommunenummer: string;
   enhetType: 'hovedenhet' | 'underenhet';
+  minAnsatte?: number;
 }
 
 export interface BRREGEnhet {
