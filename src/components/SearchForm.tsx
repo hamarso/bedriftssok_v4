@@ -13,6 +13,18 @@ interface SearchFormProps {
   isLoading: boolean
 }
 
+// Vanlige NACE-koder som eksempel
+const COMMON_NACE_CODES = [
+  { code: '620100', description: 'Programvareutvikling' },
+  { code: '620200', description: 'Rådgivning innen IT' },
+  { code: '620900', description: 'Andre IT- og informasjonstjenester' },
+  { code: '410000', description: 'Bygging av bygninger' },
+  { code: '432100', description: 'Elektrisk installasjonsarbeid' },
+  { code: '471100', description: 'Butikkhandel med dagligvarer' },
+  { code: '561000', description: 'Restauranter og serveringssteder' },
+  { code: '702100', description: 'Offentlig administrasjon' }
+]
+
 export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [filters, setFilters] = useState<SearchFilters>({
     naceCodes: [],
@@ -64,11 +76,39 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
               Legg til
             </Button>
           </div>
+          
+          {/* Vanlige NACE-koder som eksempel */}
+          <div className="text-sm text-muted-foreground">
+            <p className="mb-2">Vanlige NACE-koder:</p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {COMMON_NACE_CODES.map(({ code, description }) => (
+                <div key={code} className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!filters.naceCodes.includes(code)) {
+                        setFilters(prev => ({
+                          ...prev,
+                          naceCodes: [...prev.naceCodes, code]
+                        }))
+                      }
+                    }}
+                    className="text-primary hover:underline font-mono"
+                    disabled={filters.naceCodes.includes(code)}
+                  >
+                    {code}
+                  </button>
+                  <span className="text-muted-foreground">- {description}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
           {filters.naceCodes.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {filters.naceCodes.map((code) => (
                 <div key={code} className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md">
-                  <span className="text-sm">{code}</span>
+                  <span className="text-sm font-mono">{code}</span>
                   <button
                     type="button"
                     onClick={() => handleNaceRemove(code)}
