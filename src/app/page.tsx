@@ -11,12 +11,16 @@ export default function Home() {
   const [totalCount, setTotalCount] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [errorDetails, setErrorDetails] = useState<any>(null)
 
   const handleSearch = async (filters: SearchFilters) => {
     setIsLoading(true)
     setError(null)
+    setErrorDetails(null)
     
     try {
+      console.log('Sending search request with filters:', filters)
+      
       const response = await fetch('/api/search', {
         method: 'POST',
         headers: {
@@ -25,11 +29,17 @@ export default function Home() {
         body: JSON.stringify({ filters }),
       })
       
+      console.log('Search response status:', response.status)
+      
       if (!response.ok) {
-        throw new Error('Søket feilet')
+        const errorData = await response.json()
+        console.error('Search response error:', errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
       }
       
       const data: SearchResult = await response.json()
+      console.log('Search response data:', data)
+      
       setResults(data.data)
       setTotalCount(data.totalCount)
       
@@ -38,7 +48,15 @@ export default function Home() {
       }
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'En feil oppstod')
+      console.error('Search error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'En feil oppstod'
+      setError(errorMessage)
+      
+      // Try to get more error details
+      if (err instanceof Error && err.message.includes('BRREG API error')) {
+        setErrorDetails(err.message)
+      }
+      
       setResults([])
       setTotalCount(0)
     } finally {
@@ -73,7 +91,16 @@ export default function Home() {
 
       {error && (
         <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md">
-          {error}
+          <div className="font-semibold mb-2">Søket feilet</div>
+          <div className="text-sm">{error}</div>
+          {errorDetails && (
+            <details className="mt-2">
+              <summary className="cursor-pointer text-sm">Vis detaljer</summary>
+              <pre className="mt-2 text-xs bg-destructive/20 p-2 rounded overflow-auto">
+                {errorDetails}
+              </pre>
+            </details>
+          )}
         </div>
       )}
 
@@ -96,6 +123,7 @@ export default function Home() {
       {results.length === 0 && !isLoading && !error && (
         <div className="text-center py-12 text-muted-foreground">
           <p>Ingen søkeresultater ennå. Bruk søkefiltrene ovenfor for å starte et søk.</p>
+          <p className="text-sm mt-2">Tips: Prøv å klikke på en av de vanlige NACE-kodene ovenfor</p>
         </div>
       )}
     </div>

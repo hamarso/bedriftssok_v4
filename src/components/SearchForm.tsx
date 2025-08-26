@@ -13,16 +13,16 @@ interface SearchFormProps {
   isLoading: boolean
 }
 
-// Vanlige NACE-koder som eksempel
+// Vanlige NACE-koder som eksempel (basert på BRREG data)
 const COMMON_NACE_CODES = [
-  { code: '620100', description: 'Programvareutvikling' },
-  { code: '620200', description: 'Rådgivning innen IT' },
-  { code: '620900', description: 'Andre IT- og informasjonstjenester' },
-  { code: '410000', description: 'Bygging av bygninger' },
-  { code: '432100', description: 'Elektrisk installasjonsarbeid' },
-  { code: '471100', description: 'Butikkhandel med dagligvarer' },
-  { code: '561000', description: 'Restauranter og serveringssteder' },
-  { code: '702100', description: 'Offentlig administrasjon' }
+  { code: '62', description: 'Programvareutvikling og IT-tjenester' },
+  { code: '94', description: 'Interesseorganisasjoner' },
+  { code: '41', description: 'Bygging av bygninger' },
+  { code: '43', description: 'Spesialisert byggearbeid' },
+  { code: '47', description: 'Butikkhandel' },
+  { code: '56', description: 'Serveringssteder' },
+  { code: '70', description: 'Administrasjon og støttetjenester' },
+  { code: '85', description: 'Utdanning' }
 ]
 
 export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
