@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
     let currentPage = 0
     let totalElements = 0
     let hasMore = true
-    let maxPages = 50 // Limit to prevent too many API calls
+    let maxPages = filters.naceCodes.length > 0 ? 200 : 50 // Fetch more pages when filtering by NACE
     
     // Fetch data with pagination
     while (hasMore && allResults.length < 10000 && currentPage < maxPages) {
@@ -160,6 +160,11 @@ export async function POST(request: NextRequest) {
       // Check if there are more pages
       hasMore = brregData.page && brregData.page.number < brregData.page.totalPages - 1
       currentPage++
+      
+      // If we have NACE filters, continue fetching until we have enough results or hit limits
+      if (filters.naceCodes.length > 0 && allResults.length < 1000) {
+        hasMore = true // Force continue fetching
+      }
     }
     
     // Filter by NACE codes if specified
@@ -167,6 +172,37 @@ export async function POST(request: NextRequest) {
       console.log(`Filtering ${allResults.length} results by NACE codes:`, filters.naceCodes)
       allResults = filterByNACECodes(allResults, filters.naceCodes)
       console.log(`After NACE filtering: ${allResults.length} results`)
+      
+      // If we have very few results after filtering, we might need to fetch more data
+      if (allResults.length < 100 && currentPage < 500) {
+        console.log('Very few NACE-filtered results, fetching more data...')
+        // Continue fetching more pages to find more matching results
+        while (hasMore && allResults.length < 1000 && currentPage < 500) {
+          console.log(`Fetching additional page ${currentPage}...`)
+          
+          try {
+            const brregData = await fetchBRREGData(filters, currentPage)
+            const transformedData = transformBRREGData(brregData)
+            
+            if (transformedData.length === 0) break
+            
+            const newFilteredResults = filterByNACECodes(transformedData, filters.naceCodes)
+            allResults.push(...newFilteredResults)
+            
+            console.log(`Page ${currentPage}: ${transformedData.length} total, ${newFilteredResults.length} matching NACE`)
+            
+            hasMore = brregData.page && brregData.page.number < brregData.page.totalPages - 1
+            currentPage++
+            
+            // Stop if we have enough results
+            if (allResults.length >= 1000) break
+            
+          } catch (error) {
+            console.log(`Error fetching additional page ${currentPage}:`, error)
+            break
+          }
+        }
+      }
     }
     
     const result: SearchResult = {
@@ -176,6 +212,7 @@ export async function POST(request: NextRequest) {
     }
     
     console.log(`Final result: ${result.data.length} items, total: ${result.totalCount}`)
+    console.log(`Fetched ${currentPage} pages total`)
     console.log('=== SEARCH REQUEST END ===')
     
     return NextResponse.json(result)
