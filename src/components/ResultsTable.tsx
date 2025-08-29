@@ -2,7 +2,6 @@
 
 import { BRREGEnhet } from '@/lib/types'
 import { Button } from '@/components/ui/button'
-import { Download, FileSpreadsheet, FileText } from 'lucide-react'
 
 interface ResultsTableProps {
   results: BRREGEnhet[]
@@ -12,43 +11,64 @@ interface ResultsTableProps {
 }
 
 export function ResultsTable({ results, totalCount, onExportCSV, onExportExcel }: ResultsTableProps) {
-  if (results.length === 0) {
-    return null
+  const getContactInfo = (enhet: BRREGEnhet) => {
+    const hasContactInfo = enhet.mobil || enhet.epost
+    
+    if (!hasContactInfo) {
+      return (
+        <div className="text-xs text-muted-foreground">
+          Ingen kontaktinfo
+        </div>
+      )
+    }
+
+    return (
+      <div className="text-xs space-y-1">
+        {enhet.mobil && (
+          <div className="font-medium">📱 {enhet.mobil}</div>
+        )}
+        {enhet.epost && (
+          <div className="font-medium">✉️ {enhet.epost}</div>
+        )}
+      </div>
+    )
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          {totalCount} treff funnet
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-semibold">Resultater</h3>
+          <p className="text-sm text-muted-foreground">
+            {totalCount} bedrifter funnet
+          </p>
         </div>
+        
         <div className="flex gap-2">
           <Button onClick={onExportCSV} variant="outline" size="sm">
-            <FileText className="h-4 w-4 mr-2" />
-            Last ned CSV
+            Eksporter CSV
           </Button>
           <Button onClick={onExportExcel} variant="outline" size="sm">
-            <FileSpreadsheet className="h-4 w-4 mr-2" />
-            Last ned Excel
+            Eksporter Excel
           </Button>
         </div>
       </div>
 
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left p-3 font-medium">Organisasjonsnummer</th>
+                <th className="text-left p-3 font-medium">Org.nr</th>
                 <th className="text-left p-3 font-medium">Navn</th>
-                <th className="text-left p-3 font-medium">Postadresse</th>
-                <th className="text-left p-3 font-medium">Kommunenummer</th>
-                <th className="text-left p-3 font-medium">Antall ansatte</th>
-                <th className="text-left p-3 font-medium">NACE-kode</th>
-                <th className="text-left p-3 font-medium">Organisasjonsform</th>
-                <th className="text-left p-3 font-medium">Registreringsdato</th>
+                <th className="text-left p-3 font-medium">Adresse</th>
+                <th className="text-left p-3 font-medium">Kommune</th>
+                <th className="text-left p-3 font-medium">Ansatte</th>
+                <th className="text-left p-3 font-medium">NACE</th>
+                <th className="text-left p-3 font-medium">Org.form</th>
+                <th className="text-left p-3 font-medium">Reg.dato</th>
                 <th className="text-left p-3 font-medium">Status</th>
-                <th className="text-left p-3 font-medium">Telefon</th>
+                <th className="text-left p-3 font-medium">Kontaktinfo</th>
               </tr>
             </thead>
             <tbody>
@@ -76,8 +96,8 @@ export function ResultsTable({ results, totalCount, onExportCSV, onExportExcel }
                       {enhet.status}
                     </span>
                   </td>
-                  <td className="p-3 text-muted-foreground">
-                    <span className="text-xs">Ikke tilgjengelig i åpne API</span>
+                  <td className="p-3">
+                    {getContactInfo(enhet)}
                   </td>
                 </tr>
               ))}

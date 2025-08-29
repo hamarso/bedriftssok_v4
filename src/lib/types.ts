@@ -19,6 +19,8 @@ export interface BRREGEnhet {
   registreringsdato: string;
   status: string;
   telefon?: string;
+  mobil: string;
+  epost: string;
 }
 
 export interface BRREGResponse {

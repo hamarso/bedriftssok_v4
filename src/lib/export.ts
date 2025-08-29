@@ -14,7 +14,8 @@ export function exportToCSV(data: BRREGEnhet[], filename: string = 'bedriftssok-
     'Organisasjonsform': enhet.organisasjonsform,
     'Registreringsdato': enhet.registreringsdato,
     'Status': enhet.status,
-    'Telefon': 'Ikke tilgjengelig i åpne API'
+    'Mobil': enhet.mobil || '',
+    'E-post': enhet.epost || ''
   }))
 
   const csv = Papa.unparse(csvData)
@@ -44,7 +45,8 @@ export function exportToExcel(data: BRREGEnhet[], filename: string = 'bedriftsso
     'Organisasjonsform': enhet.organisasjonsform,
     'Registreringsdato': enhet.registreringsdato,
     'Status': enhet.status,
-    'Telefon': 'Ikke tilgjengelig i åpne API'
+    'Mobil': enhet.mobil || '',
+    'E-post': enhet.epost || ''
   }))
 
   const ws = XLSX.utils.json_to_sheet(excelData)

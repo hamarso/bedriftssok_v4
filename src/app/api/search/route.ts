@@ -84,20 +84,32 @@ function transformBRREGData(brregData: BRREGResponse): BRREGEnhet[] {
     return []
   }
   
-  return brregData._embedded.enheter.map((enhet: any) => ({
-    organisasjonsnummer: enhet.organisasjonsnummer || '',
-    navn: enhet.navn?.navn || enhet.navn || '',
-    postadresse: enhet.forretningsadresse?.poststed || enhet.postadresse?.adresse?.[0] || '',
-    postnummer: enhet.postadresse?.postnummer || '',
-    kommunenummer: enhet.postadresse?.kommunenummer || '',
-    antallAnsatte: enhet.antallAnsatte || 0,
-    naceKode: enhet.naeringskode1?.kode || '',
-    naceBeskrivelse: enhet.naeringskode1?.beskrivelse || '',
-    organisasjonsform: enhet.organisasjonsform?.kode || '',
-    registreringsdato: enhet.registreringsdatoEnhetsregisteret || enhet.registreringsdato || '',
-    status: enhet.konkurs ? 'KONKURS' : enhet.underAvvikling ? 'AVVIKLING' : 'AKTIV',
-    telefon: undefined
-  }))
+  return brregData._embedded.enheter.map((enhet: any) => {
+    // Log all available fields for the first enhet to see what we're missing
+    if (enhet.organisasjonsnummer === brregData._embedded.enheter[0].organisasjonsnummer) {
+      console.log('=== FULL ENHET RESPONSE ===')
+      console.log('All available fields:', Object.keys(enhet))
+      console.log('Full enhet object:', JSON.stringify(enhet, null, 2))
+      console.log('=== END FULL RESPONSE ===')
+    }
+    
+    return {
+      organisasjonsnummer: enhet.organisasjonsnummer || '',
+      navn: enhet.navn?.navn || enhet.navn || '',
+      postadresse: enhet.forretningsadresse?.poststed || enhet.postadresse?.adresse?.[0] || '',
+      postnummer: enhet.postadresse?.postnummer || '',
+      kommunenummer: enhet.postadresse?.kommunenummer || '',
+      antallAnsatte: enhet.antallAnsatte || 0,
+      naceKode: enhet.naeringskode1?.kode || '',
+      naceBeskrivelse: enhet.naeringskode1?.beskrivelse || '',
+      organisasjonsform: enhet.organisasjonsform?.kode || '',
+      registreringsdato: enhet.registreringsdatoEnhetsregisteret || enhet.registreringsdato || '',
+      status: enhet.konkurs ? 'KONKURS' : enhet.underAvvikling ? 'AVVIKLING' : 'AKTIV',
+      telefon: enhet.mobil || enhet.epostadresse ? 'Kontaktinfo tilgjengelig' : undefined,
+      mobil: enhet.mobil || '',
+      epost: enhet.epostadresse || ''
+    }
+  })
 }
 
 export async function POST(request: NextRequest) {
