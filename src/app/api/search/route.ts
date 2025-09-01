@@ -112,8 +112,15 @@ async function fetchBRREGDataForNACE(naceCode: string | null, filters: SearchFil
     }
   }
   
-  console.log(`Fetched ${selskaper.length} companies for NACE code ${naceCode || 'all'}`)
-  return selskaper
+      console.log(`Fetched ${selskaper.length} companies for NACE code ${naceCode || 'all'}`)
+    
+    // If no results found for a specific NACE code, log a warning
+    if (naceCode && selskaper.length === 0) {
+      console.warn(`⚠️ No companies found for NACE code: ${naceCode}`)
+      console.warn(`This could mean the NACE code doesn't exist or no companies are registered with this code`)
+    }
+    
+    return selskaper
 }
 
 function transformBRREGData(brregData: BRREGResponse): BRREGEnhet[] {

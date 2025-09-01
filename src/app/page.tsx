@@ -122,8 +122,21 @@ export default function Home() {
 
       {results.length === 0 && !isLoading && !error && (
         <div className="text-center py-12 text-muted-foreground">
-          <p>Ingen søkeresultater ennå. Bruk søkefiltrene ovenfor for å starte et søk.</p>
-          <p className="text-sm mt-2">Tips: Prøv å klikke på en av de vanlige NACE-kodene ovenfor</p>
+          <p>Ingen søkeresultater funnet.</p>
+          <div className="text-sm mt-4 space-y-2">
+            <p>💡 Dette kan bety:</p>
+            <ul className="text-left max-w-md mx-auto space-y-1">
+              <li>• NACE-koden finnes ikke i BRREG-databasen</li>
+              <li>• Ingen bedrifter er registrert med denne koden</li>
+              <li>• Filtreringskriteriene er for spesifikke</li>
+            </ul>
+            <p className="mt-4">🔍 Prøv å:</p>
+            <ul className="text-left max-w-md mx-auto space-y-1">
+              <li>• Bruke en mer generell NACE-kode (f.eks. 68 i stedet for 68.209)</li>
+              <li>• Fjerne noen filtre</li>
+              <li>• Klikke på en av de vanlige NACE-kodene ovenfor</li>
+            </ul>
+          </div>
         </div>
       )}
     </div>

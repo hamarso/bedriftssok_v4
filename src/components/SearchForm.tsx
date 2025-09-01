@@ -16,7 +16,10 @@ interface SearchFormProps {
 // Vanlige NACE-koder som eksempel (basert på BRREG data)
 const COMMON_NACE_CODES = [
   { code: '69.201', description: 'Revisjon' },
+  { code: '69.202', description: 'Regnskapsføring og bokføring' },
   { code: '62', description: 'Programvareutvikling og IT-tjenester' },
+  { code: '68', description: 'Eiendomsvirksomhet' },
+  { code: '68.20', description: 'Utleie og drift av egen eller leid fast eiendom' },
   { code: '94', description: 'Interesseorganisasjoner' },
   { code: '41', description: 'Bygging av bygninger' },
   { code: '43', description: 'Spesialisert byggearbeid' },
@@ -81,6 +84,8 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
           
           <div className="text-xs text-muted-foreground">
             <p>💡 Du kan legge til flere NACE-koder for å søke i flere bransjer samtidig</p>
+            <p>⚠️ Hvis du ikke får resultater, kan det være at NACE-koden ikke finnes i BRREG-databasen</p>
+            <p>🔍 Prøv å bruke en mer generell kode (f.eks. 68 i stedet for 68.209)</p>
           </div>
           
           {/* Vanlige NACE-koder som eksempel */}
