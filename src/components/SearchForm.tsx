@@ -15,6 +15,7 @@ interface SearchFormProps {
 
 // Vanlige NACE-koder som eksempel (basert på BRREG data)
 const COMMON_NACE_CODES = [
+  { code: '69.201', description: 'Revisjon' },
   { code: '62', description: 'Programvareutvikling og IT-tjenester' },
   { code: '94', description: 'Interesseorganisasjoner' },
   { code: '41', description: 'Bygging av bygninger' },
@@ -76,6 +77,10 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             <Button type="button" onClick={handleNaceAdd} variant="outline">
               Legg til
             </Button>
+          </div>
+          
+          <div className="text-xs text-muted-foreground">
+            <p>💡 Du kan legge til flere NACE-koder for å søke i flere bransjer samtidig</p>
           </div>
           
           {/* Vanlige NACE-koder som eksempel */}
